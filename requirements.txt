@@ -1,0 +1,4 @@
+psycopg2==2.9.7
+tkintertable==1.3.3
+Pillow==10.0.0
+python-dotenv==1.0.0
