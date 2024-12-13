@@ -1,6 +1,15 @@
+Para su optimo rendimiento de este proyecto, es necesario instalar lo siguiente:
+
+1. Abrir el simbolo de sistema como administrador
+2. Copiar y instalar las siguientes extensiones
+
 psycopg2==2.9.7
 tkintertable==1.3.3
 Pillow==10.0.0
 python-dotenv==1.0.0
 
-po
+3. Luego es necesario crear una base de datos vacia en Postgres, y actualizar los credenciales
+en los archivos de "migracion.py" y "faz.py"
+
+4. Abrir su lector de codigo y compilar "faz.py", y empiece a disfrutar de las diferentes herramientas
+que se veran reflejadas en SQL que le presentamos.
