@@ -13,3 +13,4 @@ en los archivos de "migracion.py" y "faz.py"
 
 4. Abrir su lector de codigo y compilar "faz.py", y empiece a disfrutar de las diferentes herramientas
 que se veran reflejadas en SQL que le presentamos.
+.
