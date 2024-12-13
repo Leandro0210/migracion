@@ -1,4 +1,4 @@
-###Bienvenidos a Drinkers###
+#Bienvenidos a Drinkers
 
 Tenemos la interfaz "faz.py", esta conectada a la base de datos de MYSQL,
 Nos permite:
