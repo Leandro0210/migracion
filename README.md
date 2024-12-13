@@ -1,4 +1,5 @@
 ###Bienvenidos a Drinkers###
+
 Tenemos la interfaz "faz.py", esta conectada a la base de datos de MYSQL,
 Nos permite:
 - Ver los registros almacenados en la base de datos, como ser categorias, clientes, productos, etc.
