@@ -1,0 +1,73 @@
+# **Pseudocódigo del archivo principal**
+
+1. **Conexión a la Base de Datos**
+   - Definir las variables para la conexión:
+     - `SERVER = 'Leandro'`
+     - `DATABASE = 'Drinkers'`
+     - `connectionString = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=SERVER;DATABASE=DATABASE;Trusted_Connection=yes;"`
+
+   - Intentar establecer conexión con la base de datos:
+     - Si la conexión es exitosa:
+       - Mostrar mensaje: "Conexión exitosa"
+     - Si ocurre un error:
+       - Mostrar mensaje: "Error al conectar o ejecutar la consulta" seguido de los detalles.
+
+2. **Crear Ventana Principal**
+   - Crear una ventana principal `root`:
+     - Configurar:
+       - Título = "Drinkers"
+       - Dimensiones = "400x600"
+       - Fondo = color dorado `#D4AF37`
+       - Ícono = "logo.ico"
+
+   - Crear un marco principal `menu_marco`:
+     - Posicionarlo con espacio vertical.
+     - Fondo = color dorado `#D4AF37`.
+
+   - Crear un título dentro del marco principal:
+     - Texto: "Bienvenidos a Drinkers"
+     - Configurar:
+       - Fuente = Arial, tamaño 20, negrita.
+       - Espaciado vertical.
+
+3. **Función: Mostrar Entradas**
+   - Definir función `mostrar_entradas`:
+     - Limpiar elementos del marco `menu_marco`:
+       - Para cada elemento en `menu_marco`:
+         - Eliminarlo.
+
+     - Crear un nuevo marco `entrada_frame` para las opciones:
+       - Fondo = color dorado `#D4AF37`.
+       - Posicionarlo con espacio vertical.
+
+     - Crear botones dentro del nuevo marco:
+       1. Botón para "Visualizar registros":
+          - Texto: "Visualizar registros".
+          - Acción: Llamar a la función `visual(root, conn)`.
+       2. Botón para "Agregar registros":
+          - Texto: "Agregar registros".
+          - Acción: Llamar a la función `agrego(root, conn)`.
+       3. Botón para "Modificar registros":
+          - Texto: "Modificar registros".
+          - Acción: Llamar a la función `cambios(root, conn)`.
+       4. Botón para "Eliminar registros":
+          - Texto: "Eliminar registros".
+          - Acción: Llamar a la función `borro(root, conn)`.
+       5. Botón para "Salir":
+          - Texto: "Salir".
+          - Acción: Llamar a la función `cerrar_conexion(root, conn)`.
+
+     - Mostrar el marco `entrada_frame`.
+
+4. **Configurar Botones del Menú Principal**
+   - Crear dos botones dentro del marco `menu_marco`:
+     1. Botón para acceder a las funciones:
+        - Texto: "Funciones".
+        - Acción: Llamar a la función `mostrar_entradas()`.
+     2. Botón para salir del programa:
+        - Texto: "Salir".
+        - Acción: Llamar a la función `cerrar_conexion(root, conn)`.
+
+5. **Ejecutar Loop Principal**
+   - Ejecutar el loop principal de la ventana:
+     - Llamar a `root.mainloop`.
