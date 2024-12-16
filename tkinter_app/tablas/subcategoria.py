@@ -2,13 +2,13 @@ import pyodbc
 import tkinter as tk
 from tkinter import ttk
 
-def mues_sub(conn):
+def mostrar_subcateg(conn):
     """
     Muestra los registros de la tabla 'subcategoria' usando la conexión proporcionada en un Treeview.
     """
     try:
         # Define la consulta SQL
-        SQL_QUERY = "SELECT Subcategoria_ID, Categoria_ID, Nombre_Sub FROM subcategoria"
+        SQL_QUERY = "SELECT * FROM subcategoria"
 
         # Crear un cursor y ejecutar la consulta
         cursor = conn.cursor()
@@ -35,7 +35,7 @@ def mues_sub(conn):
         # Insertar datos en el Treeview
         rows = cursor.fetchall()
         for row in rows:
-            tabla.insert("", tk.END, values=row)  # Insertar fila en la tabla
+            tabla.insert("", tk.END, values=row)  
 
         # Cerrar el cursor
         cursor.close()

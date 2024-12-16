@@ -1,8 +1,8 @@
 import pyodbc
 import psycopg2
-from cerrar.post import con_pos
+from cerrar.interfaz_postgre import interfaz
 from datetime import datetime
-
+from clase.conexion import *
 # Configuración de SQL Server
 SERVER = 'Leandro'
 DATABASE = 'Drinkers'
@@ -31,14 +31,8 @@ except pyodbc.Error as e:
 
 try:
     # Conectar a PostgreSQL
-    conn_postgres = psycopg2.connect(
-        database="Drinkers",
-        user="postgres",
-        host='localhost',
-        password="HalaMadrid",
-        port=5432
-    )
-    print("Conexión exitosa a PostgreSQL")
+    db_manager = DatabaseManager(database="Drinkers", user="postgres", host="localhost", password="HalaMadrid",  port="5432")
+    conn_postgres = db_manager.connect()
     cursor_postgres = conn_postgres.cursor()
 
     # Iterar sobre cada tabla de SQL Server
@@ -102,4 +96,4 @@ finally:
     cursor_postgres.close()
     conn_postgres.close()
     print("Conexiones cerradas")
-    con_pos()
+    interfaz()

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import pyodbc
 
-def mues_cate(conn):
+def mostrar_categoria(conn):
     """
     Muestra los registros de la tabla 'categoria' en una tabla gráfica (Treeview) usando la conexión proporcionada.
     """
@@ -32,8 +32,8 @@ def mues_cate(conn):
             tabla.column(col, anchor=tk.CENTER, width=100)
 
         # Insertar datos en el Treeview
-        rows = cursor.fetchall()
-        for row in rows:
+        filas = cursor.fetchall()
+        for row in filas:
             tabla.insert("", tk.END, values=row)
 
         # Cerrar el cursor

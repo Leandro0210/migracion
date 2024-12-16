@@ -1,9 +1,9 @@
 import tkinter as tk
 import pyodbc
 from funciones.show import visual
-from funciones.agre import agrego
-from funciones.mod import cambios
-from funciones.dele import borro
+from funciones.agregar import agregardatos
+from funciones.modificar import modificaciones
+from funciones.delete import borrar_dato
 from cerrar.close import cerrar_conexion
 
 # Configuración de la base de datos
@@ -19,7 +19,7 @@ except pyodbc.Error as e:
     print(f"Error al conectar o ejecutar la consulta: {e}")
 
 # Crear la ventana principal
-root = tk.Tk()
+root = tk.Tk()  
 root.title("Drinkers")
 root.geometry("400x600")
 root["bg"]="#D4AF37"
@@ -50,13 +50,13 @@ def mostrar_entradas():
     boton_show = tk.Button(entrada_frame, text="Visualizar registros", font=("Arial", 12), command= lambda: visual(root, conn))
     boton_show.pack(pady=10)
 
-    boton_add = tk.Button(entrada_frame, text="Agregar registros", font=("Arial", 12), command= lambda: agrego(root, conn))
+    boton_add = tk.Button(entrada_frame, text="Agregar registros", font=("Arial", 12), command= lambda: agregardatos(root, conn))
     boton_add.pack(pady=10)
 
-    boton_change = tk.Button(entrada_frame, text="Modificar registros", font=("Arial", 12), command= lambda: cambios(root, conn))
+    boton_change = tk.Button(entrada_frame, text="Modificar registros", font=("Arial", 12), command= lambda: modificaciones(root, conn))
     boton_change.pack(pady=10)
 
-    boton_delete = tk.Button(entrada_frame, text="Eliminar registros", font=("Arial", 12), command=lambda: borro(root, conn))
+    boton_delete = tk.Button(entrada_frame, text="Eliminar registros", font=("Arial", 12), command=lambda: borrar_dato(root, conn))
     boton_delete.pack(pady=10)
 
     boton_sa = tk.Button(entrada_frame, text="Salir", font=("Arial", 12), command=lambda: cerrar_conexion(root, conn))

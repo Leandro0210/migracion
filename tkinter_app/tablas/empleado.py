@@ -3,7 +3,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from cerrar.close import cerrar_conexion
-def mues_emp(conn):
+
+def mostrar_empleados(conn):
     """
     Muestra los registros de la tabla 'Empleado' usando la conexión proporcionada.
     """
@@ -46,161 +47,131 @@ def mues_emp(conn):
     except pyodbc.Error as e:
         print(f"Error al consultar la base de datos: {e}")
 
-def agre_emp(root, conn):
-    """
-    Interfaz para agregar datos a la tabla 'empleados'.
-    """
-    # Limpiar la ventana principal
+
+def insertar_empleado(conn, id_entrada, nombre_entrada):
+    empleado_id = id_entrada.get().strip()
+    nombre_empleado = nombre_entrada.get().strip()
+
+    if not empleado_id or not nombre_empleado:
+        messagebox.showerror("Error", "Todos los campos son obligatorios.")
+        return
+
+    try:
+        cursor = conn.cursor()
+        SQL_INSERT = "INSERT INTO Empleado (empleado_ID, Nombre_emp) VALUES (?, ?)"
+        cursor.execute(SQL_INSERT, (empleado_id, nombre_empleado))
+        conn.commit()
+
+        messagebox.showinfo("Éxito", f"Empleado '{nombre_empleado}' agregado correctamente.")
+        id_entrada.delete(0, tk.END)
+        nombre_entrada.delete(0, tk.END)
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo agregar el empleado. Detalles: {e}")
+
+def actualizar_empleado(conn, id_entrada, nombre_entrada):
+    empleado_id = id_entrada.get().strip()
+    nuevo_nombre = nombre_entrada.get().strip()
+
+    if not empleado_id or not nuevo_nombre:
+        messagebox.showerror("Error", "Todos los campos son obligatorios.")
+        return
+
+    try:
+        cursor = conn.cursor()
+        SQL_UPDATE = "UPDATE Empleado SET Nombre_emp = ? WHERE empleado_ID = ?"
+        cursor.execute(SQL_UPDATE, (nuevo_nombre, empleado_id))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            messagebox.showwarning("Advertencia", f"No se encontró el empleado con ID '{empleado_id}'.")
+        else:
+            messagebox.showinfo("Éxito", f"Empleado con ID '{empleado_id}' actualizado correctamente.")
+
+        id_entrada.delete(0, tk.END)
+        nombre_entrada.delete(0, tk.END)
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo actualizar el empleado. Detalles: {e}")
+
+def eliminar_empleado(conn, empleado_id_entrada):
+    empleado_id = empleado_id_entrada.get().strip()
+
+    if not empleado_id:
+        messagebox.showerror("Error", "El ID del empleado es obligatorio.")
+        return
+
+    try:
+        cursor = conn.cursor()
+        SQL_DELETE = "DELETE FROM Empleado WHERE Empleado_ID = ?"
+        cursor.execute(SQL_DELETE, (empleado_id,))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            messagebox.showwarning("Advertencia", f"No se encontró el empleado con ID '{empleado_id}'.")
+        else:
+            messagebox.showinfo("Éxito", f"Empleado con ID '{empleado_id}' eliminado correctamente.")
+
+        empleado_id_entrada.delete(0, tk.END)
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo eliminar el empleado. Detalles: {e}")
+
+def agregar_empleado(root, conn):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Crear un marco para el formulario
-    frame = tk.Frame(root)
-    frame.pack(pady=20)
-    frame["bg"]="#D4AF37"
-    # Etiquetas y campos de entrada
-    tk.Label(frame, text="Empleado ID", font=("Arial", 12)).grid(row=0, column=0, padx=10, pady=5)
-    id_entry = tk.Entry(frame, font=("Arial", 12))
-    id_entry.grid(row=0, column=1, padx=10, pady=5)
+    marco = tk.Frame(root)
+    marco.pack(pady=20)
+    marco["bg"] = "#D4AF37"
 
-    tk.Label(frame, text="Nombre Empleado", font=("Arial", 12)).grid(row=1, column=0, padx=10, pady=5)
-    nombre_entry = tk.Entry(frame, font=("Arial", 12))
-    nombre_entry.grid(row=1, column=1, padx=10, pady=5)
+    tk.Label(marco, text="Empleado ID", font=("Arial", 12)).grid(row=0, column=0, padx=10, pady=5)
+    id_entrada = tk.Entry(marco, font=("Arial", 12))
+    id_entrada.grid(row=0, column=1, padx=10, pady=5)
 
-    # Función para insertar datos
-    def insertar_empleado():
-        empleado_id = id_entry.get().strip()
-        nombre_emp = nombre_entry.get().strip()
+    tk.Label(marco, text="Nombre Empleado", font=("Arial", 12)).grid(row=1, column=0, padx=10, pady=5)
+    nombre_entrada = tk.Entry(marco, font=("Arial", 12))
+    nombre_entrada.grid(row=1, column=1, padx=10, pady=5)
 
-        if not empleado_id or not nombre_emp:
-            messagebox.showerror("Error", "Todos los campos son obligatorios.")
-            return
+    agregar_boton = tk.Button(marco, text="Agregar Empleado", font=("Arial", 12), command=lambda: insertar_empleado(conn, id_entrada, nombre_entrada))
+    agregar_boton.grid(row=2, column=0, columnspan=2, pady=10)
 
-        try:
-            cursor = conn.cursor()
-            SQL_INSERT = "INSERT INTO Empleado (empleado_ID, Nombre_emp) VALUES (?, ?)"
-            cursor.execute(SQL_INSERT, (empleado_id, nombre_emp))
-            conn.commit()
+    salir_boton = tk.Button(marco, text="Salir", font=("Arial", 12), command=lambda: cerrar_conexion(root, conn))
+    salir_boton.grid(row=3, column=0, columnspan=2, pady=10)
 
-            messagebox.showinfo("Éxito", f"Empleado '{nombre_emp}' agregado correctamente.")
-            id_entry.delete(0, tk.END)
-            nombre_entry.delete(0, tk.END)
-        except Exception as e:
-            messagebox.showerror("Error", f"No se pudo agregar el empleado. Detalles: {e}")
-
-    # Botón para agregar el empleado
-    agregar_btn = tk.Button(frame, text="Agregar Empleado", font=("Arial", 12), command=insertar_empleado)
-    agregar_btn.grid(row=2, column=0, columnspan=2, pady=10)
-    # Botón para salir
-    salir_btn = tk.Button(frame, text="Salir", font=("Arial", 12), command=lambda: cerrar_conexion(root, conn))
-    salir_btn.grid(row=3, column=0, columnspan=2, pady=10)
-  
-
-def mod_emp(root, conn):
-    """
-    Interfaz para modificar los datos de la tabla 'Empleado'.
-    """
-    # Limpiar la ventana principal
+def modificar_empleado(root, conn):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Crear un marco para el formulario
-    frame = tk.Frame(root)
-    frame.pack(pady=20)
-    frame["bg"] = "#87CEEB"
+    marco = tk.Frame(root)
+    marco.pack(pady=20)
+    marco["bg"] = "#87CEEB"
 
-    # Etiquetas y campos de entrada
-    tk.Label(frame, text="Empleado ID (a modificar)", font=("Arial", 12)).grid(row=0, column=0, padx=10, pady=5)
-    id_entry = tk.Entry(frame, font=("Arial", 12))
-    id_entry.grid(row=0, column=1, padx=10, pady=5)
+    tk.Label(marco, text="Empleado ID (a modificar)", font=("Arial", 12)).grid(row=0, column=0, padx=10, pady=5)
+    id_entrada = tk.Entry(marco, font=("Arial", 12))
+    id_entrada.grid(row=0, column=1, padx=10, pady=5)
 
-    tk.Label(frame, text="Nuevo Nombre", font=("Arial", 12)).grid(row=1, column=0, padx=10, pady=5)
-    nombre_entry = tk.Entry(frame, font=("Arial", 12))
-    nombre_entry.grid(row=1, column=1, padx=10, pady=5)
+    tk.Label(marco, text="Nuevo Nombre", font=("Arial", 12)).grid(row=1, column=0, padx=10, pady=5)
+    nombre_entrada = tk.Entry(marco, font=("Arial", 12))
+    nombre_entrada.grid(row=1, column=1, padx=10, pady=5)
 
-    # Función para modificar datos
-    def actualizar_empleado():
-        empleado_id = id_entry.get().strip()
-        nuevo_nombre = nombre_entry.get().strip()
+    actualizar_boton = tk.Button(marco, text="Actualizar Empleado", font=("Arial", 12), command=lambda: actualizar_empleado(conn, id_entrada, nombre_entrada))
+    actualizar_boton.grid(row=2, column=0, columnspan=2, pady=10)
 
-        if not empleado_id or not nuevo_nombre:
-            messagebox.showerror("Error", "Todos los campos son obligatorios.")
-            return
+    volver_boton = tk.Button(marco, text="Salir", font=("Arial", 12), command=lambda: cerrar_conexion(root, conn))
+    volver_boton.grid(row=3, column=0, columnspan=2, pady=10)
 
-        try:
-            # Actualizar datos en la base de datos
-            cursor = conn.cursor()
-            SQL_UPDATE = "UPDATE Empleado SET Nombre_emp = ? WHERE empleado_ID = ?"
-            cursor.execute(SQL_UPDATE, (nuevo_nombre, empleado_id))
-            conn.commit()
-
-            if cursor.rowcount == 0:
-                messagebox.showwarning("Advertencia", f"No se encontró el empleado con ID '{empleado_id}'.")
-            else:
-                messagebox.showinfo("Éxito", f"Empleado con ID '{empleado_id}' actualizado correctamente.")
-            
-            # Limpiar los campos de entrada
-            id_entry.delete(0, tk.END)
-            nombre_entry.delete(0, tk.END)
-        except Exception as e:
-            messagebox.showerror("Error", f"No se pudo actualizar el empleado. Detalles: {e}")
-
-    # Botón para actualizar los datos
-    actualizar_btn = tk.Button(frame, text="Actualizar Empleado", font=("Arial", 12), command=actualizar_empleado)
-    actualizar_btn.grid(row=2, column=0, columnspan=2, pady=10)
-
-    # Botón para volver al menú anterior
-    volver_btn = tk.Button(frame, text="Salir", font=("Arial", 12), command=lambda: cerrar_conexion(root, conn))
-    volver_btn.grid(row=3, column=0, columnspan=2, pady=10)
-    
-
-def del_emp(root, conn):
-    """
-    Interfaz para eliminar un registro de la tabla 'Empleado' dado su Empleado_ID.
-    """
-    # Limpiar la ventana principal
+def borrar_empleado(root, conn):
     for widget in root.winfo_children():
         widget.destroy()
 
-    # Crear un marco para el formulario
-    frame = tk.Frame(root)
-    frame.pack(pady=20)
-    frame["bg"] = "#FFD700"
+    marco = tk.Frame(root)
+    marco.pack(pady=20)
+    marco["bg"] = "#FFD700"
 
-    # Etiquetas y campos de entrada
-    tk.Label(frame, text="Empleado ID (a eliminar)", font=("Arial", 12)).grid(row=0, column=0, padx=10, pady=5)
-    empleado_id_entry = tk.Entry(frame, font=("Arial", 12))
-    empleado_id_entry.grid(row=0, column=1, padx=10, pady=5)
+    tk.Label(marco, text="Empleado ID (a eliminar)", font=("Arial", 12)).grid(row=0, column=0, padx=10, pady=5)
+    empleado_id_entrada = tk.Entry(marco, font=("Arial", 12))
+    empleado_id_entrada.grid(row=0, column=1, padx=10, pady=5)
 
-    # Función para eliminar un registro
-    def eliminar_empleado():
-        empleado_id = empleado_id_entry.get().strip()
+    eliminar_boton = tk.Button(marco, text="Eliminar Empleado", font=("Arial", 12), command=lambda: eliminar_empleado(conn, empleado_id_entrada))
+    eliminar_boton.grid(row=1, column=0, columnspan=2, pady=10)
 
-        if not empleado_id:
-            messagebox.showerror("Error", "El ID del empleado es obligatorio.")
-            return
-
-        try:
-            # Eliminar registro en la base de datos
-            cursor = conn.cursor()
-            SQL_DELETE = "DELETE FROM Empleado WHERE Empleado_ID = ?"
-            cursor.execute(SQL_DELETE, (empleado_id,))
-            conn.commit()
-
-            if cursor.rowcount == 0:
-                messagebox.showwarning("Advertencia", f"No se encontró el empleado con ID '{empleado_id}'.")
-            else:
-                messagebox.showinfo("Éxito", f"Empleado con ID '{empleado_id}' eliminado correctamente.")
-
-            # Limpiar el campo de entrada
-            empleado_id_entry.delete(0, tk.END)
-        except Exception as e:
-            messagebox.showerror("Error", f"No se pudo eliminar el empleado. Detalles: {e}")
-
-    # Botón para eliminar el registro
-    eliminar_btn = tk.Button(frame, text="Eliminar Empleado", font=("Arial", 12), command=eliminar_empleado)
-    eliminar_btn.grid(row=1, column=0, columnspan=2, pady=10)
-
-    # Botón para volver al menú anterior
-    volver_btn = tk.Button(frame, text="Salir", font=("Arial", 12), command=lambda: cerrar_conexion(root, conn))
-    volver_btn.grid(row=2, column=0, columnspan=2, pady=10)
+    volver_boton = tk.Button(marco, text="Salir", font=("Arial", 12), command=lambda: cerrar_conexion(root, conn))
+    volver_boton.grid(row=2, column=0, columnspan=2, pady=10)
